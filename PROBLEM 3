@@ -1,0 +1,30 @@
+function deepFreeze(obj) {
+  // 1. Base check: only objects (excluding null) and functions need freezing
+  if (obj === null || (typeof obj !== 'object' && typeof obj !== 'function')) {
+    return obj;
+  }
+
+  // 2. Avoid re-processing if the object is already frozen (handles circular references or repeated calls)
+  if (Object.isFrozen(obj)) {
+    return obj;
+  }
+
+  // 3. Freeze the current object
+  Object.freeze(obj);
+
+  // 4. Recursively freeze all property values
+  for (const value of Object.values(obj)) {
+    deepFreeze(value);
+  }
+
+  return obj;
+}
+
+// Test cases
+const config = deepFreeze({ api: { baseUrl: 'https://x.com', retries: 3 }, debug: false });
+
+config.api.baseUrl = 'https://changed.com'; // Ignored in non-strict mode (throws in 'use strict')
+config.debug = true;                        // Ignored in non-strict mode (throws in 'use strict')
+
+console.log(config.api.baseUrl, config.debug); // "https://x.com" false
+console.log(Object.isFrozen(config.api));      // true
