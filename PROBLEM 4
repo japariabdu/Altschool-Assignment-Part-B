@@ -1,0 +1,30 @@
+function createCounter(initialValue = 0) {
+  // Private variable held within the closure scope
+  let count = initialValue;
+
+  return {
+    increment() {
+      count++;
+    },
+    decrement() {
+      count--;
+    },
+    // Getter function binding property access directly to the enclosed state
+    get value() {
+      return count;
+    }
+  };
+}
+
+// Test case
+const counter = createCounter();
+counter.increment();
+counter.increment();
+counter.decrement();
+
+console.log(counter.value); // 1
+console.log(counter.count); // undefined — not directly accessible
+
+// Attempting to overwrite value directly has no effect without a setter
+counter.value = 99;
+console.log(counter.value); // 1
