@@ -1,0 +1,38 @@
+function deepEqual(objA, objB) {
+  // 1. Primitive equality & identical reference check
+  if (objA === objB) return true;
+
+  // 2. Handle null or non-object types
+  // (typeof null === 'object', so explicit null checks are required)
+  if (
+    typeof objA !== 'object' ||
+    objA === null ||
+    typeof objB !== 'object' ||
+    objB === null
+  ) {
+    return false;
+  }
+
+  // 3. Compare key lengths
+  const keysA = Object.keys(objA);
+  const keysB = Object.keys(objB);
+
+  if (keysA.length !== keysB.length) return false;
+
+  // 4. Recursively check keys and values
+  for (const key of keysA) {
+    // Ensure objB has the key and its value deeply matches objA's value
+    if (!Object.prototype.hasOwnProperty.call(objB, key) || !deepEqual(objA[key], objB[key])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// Test cases
+console.log(deepEqual({ a: 1, b: { c: 2 } }, { a: 1, b: { c: 2 } })); // true
+console.log(deepEqual({ a: 1, b: { c: 2 } }, { a: 1, b: { c: 3 } })); // false
+console.log(deepEqual({ a: 1 }, { a: 1, b: 2 }));                      // false
+console.log(deepEqual(null, null));                                    // true
+console.log(deepEqual({ a: undefined }, {}));                          // false
